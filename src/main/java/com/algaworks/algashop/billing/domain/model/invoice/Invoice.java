@@ -4,13 +4,11 @@ import com.algaworks.algashop.billing.domain.model.DomainException;
 import com.algaworks.algashop.billing.domain.model.IdGenerator;
 import jakarta.persistence.Id;
 import lombok.*;
+import org.apache.commons.lang3.StringUtils;
 
 import java.math.BigDecimal;
 import java.time.OffsetDateTime;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Setter(AccessLevel.PRIVATE)
 @Getter
@@ -41,9 +39,24 @@ public class Invoice {
 
     private String cancelReason;
 
-    public static Invoice issue(String orderId, UUID customerId, Payer payer, Set<LineItem> items) {
+    public static Invoice issue(String orderId,
+                                UUID customerId,
+                                Payer payer,
+                                Set<LineItem> items) {
+        Objects.requireNonNull(customerId);
+        Objects.requireNonNull(payer);
+        Objects.requireNonNull(items);
 
-        BigDecimal totalAmount = items.stream().map(LineItem::getAmount).reduce(BigDecimal.ZERO, BigDecimal::add);
+        if (StringUtils.isBlank(orderId)) {
+            throw new IllegalArgumentException();
+        }
+
+        if (items.isEmpty()) {
+            throw new IllegalArgumentException();
+        }
+
+        BigDecimal totalAmount = items.stream().map(LineItem::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         return new Invoice(
                 IdGenerator.generateTimeBasedUUID(),
