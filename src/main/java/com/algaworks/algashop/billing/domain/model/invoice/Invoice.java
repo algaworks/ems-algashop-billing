@@ -35,7 +35,7 @@ public class Invoice extends AbstractAuditableAggregateRoot<Invoice> {
     @Enumerated(EnumType.STRING)
     private InvoiceStatus status;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private PaymentSettings paymentSettings;
 
     @ElementCollection
