@@ -23,7 +23,7 @@ algashop:
     payment:
       provider: FASTPAY #FAKE
       fastpay:
-        hostname: http://localhost:8787
+        hostname: http://localhost:8788
         private-token: SSEewtC6Ps5yJLdB6SJmh1bqJXgRbCdf8ocDj2hU
         public-token: tDBmh0ZiDrmaZ8BVQD7i9UYdcj9KtZUk
         webhook-url: http://host.docker.internal:8082/api/v1/webhooks/fastpay
