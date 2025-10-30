@@ -1,6 +1,6 @@
 package com.algaworks.algashop.billing.infrastructure.creditcard.fastpay;
 
-import com.algaworks.algashop.billing.infrastructure.payment.AlgaShopPaymentPropreties;
+import com.algaworks.algashop.billing.infrastructure.payment.AlgaShopPaymentProperties;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,7 +14,7 @@ public class FastpayCreditCardTokenizationAPIClientConfig {
     @Bean
     public FastpayCreditCardTokenizationAPIClient fastpayCreditCardTokenizationAPIClient(
             RestClient.Builder builder,
-            AlgaShopPaymentPropreties propreties,
+            AlgaShopPaymentProperties propreties,
             @Value("${algashop.integrations.payment.fastpay.public-token}") String publicToken
     ) {
         var fastpayProperties = propreties.getFastpay();

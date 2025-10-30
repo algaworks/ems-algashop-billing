@@ -8,7 +8,7 @@ import com.algaworks.algashop.billing.domain.model.invoice.Payer;
 import com.algaworks.algashop.billing.domain.model.invoice.payment.Payment;
 import com.algaworks.algashop.billing.domain.model.invoice.payment.PaymentGatewayService;
 import com.algaworks.algashop.billing.domain.model.invoice.payment.PaymentRequest;
-import com.algaworks.algashop.billing.infrastructure.payment.AlgaShopPaymentPropreties;
+import com.algaworks.algashop.billing.infrastructure.payment.AlgaShopPaymentProperties;
 import com.algaworks.algashop.billing.presentation.BadGatewayException;
 import com.algaworks.algashop.billing.presentation.GatewayTimeoutException;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -30,7 +29,7 @@ public class PaymentGatewayServiceFastpayImpl implements PaymentGatewayService {
     private final FastpayPaymentAPIClient fastpayPaymentAPIClient;
     private final CreditCardRepository creditCardRepository;
 
-    private final AlgaShopPaymentPropreties algaShopPaymentPropreties;
+    private final AlgaShopPaymentProperties algaShopPaymentProperties;
 
     @Override
     public Payment capture(PaymentRequest request) {
@@ -75,7 +74,7 @@ public class PaymentGatewayServiceFastpayImpl implements PaymentGatewayService {
                 .zipCode(address.getZipCode())
                 .addressLine1(address.getStreet() + ", " + address.getNumber())
                 .addressLine2(address.getComplement())
-                .replyToUrl(algaShopPaymentPropreties.getFastpay().getWebhookUrl());
+                .replyToUrl(algaShopPaymentProperties.getFastpay().getWebhookUrl());
 
         switch (request.getMethod()) {
             case CREDIT_CARD -> {

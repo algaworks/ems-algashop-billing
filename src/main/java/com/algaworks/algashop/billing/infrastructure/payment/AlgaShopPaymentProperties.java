@@ -12,7 +12,7 @@ import org.springframework.validation.annotation.Validated;
 @ConfigurationProperties("algashop.integrations.payment")
 @Data
 @Validated
-public class AlgaShopPaymentPropreties {
+public class AlgaShopPaymentProperties {
     @NotNull
     private AlgaShopPaymentProvider provider;
 

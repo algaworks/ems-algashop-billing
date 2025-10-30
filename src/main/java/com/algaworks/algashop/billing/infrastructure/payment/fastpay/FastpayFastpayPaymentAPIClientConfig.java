@@ -1,7 +1,6 @@
 package com.algaworks.algashop.billing.infrastructure.payment.fastpay;
 
-import com.algaworks.algashop.billing.infrastructure.creditcard.fastpay.FastpayCreditCardAPIClient;
-import com.algaworks.algashop.billing.infrastructure.payment.AlgaShopPaymentPropreties;
+import com.algaworks.algashop.billing.infrastructure.payment.AlgaShopPaymentProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestClient;
@@ -14,7 +13,7 @@ public class FastpayFastpayPaymentAPIClientConfig {
     @Bean
     public FastpayPaymentAPIClient fastpayPaymentAPIClient(
             RestClient.Builder builder,
-            AlgaShopPaymentPropreties properties
+            AlgaShopPaymentProperties properties
     ) {
         var fastpayProperties = properties.getFastpay();
 
