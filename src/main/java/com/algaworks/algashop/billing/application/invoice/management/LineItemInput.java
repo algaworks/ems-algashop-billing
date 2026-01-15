@@ -18,8 +18,6 @@ public class LineItemInput {
 	@NotBlank
 	private String name;
 	@NotNull
+    @Positive
 	private BigDecimal amount;
-	@NotNull
-	@Positive
-	private Integer quantity;
 }
