@@ -9,6 +9,8 @@ import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemp
 import com.github.tomakehurst.wiremock.extension.responsetemplating.TemplateEngine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.time.Year;
 import java.util.Collections;
@@ -18,6 +20,9 @@ import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options
 
 @Import({FastpayCreditCardTokenizationAPIClientConfig.class, TestcontainerPostgreSQLConfig.class})
 public abstract class AbstractFastpayIT {
+
+    @MockitoBean
+    private JwtDecoder jwtDecoder;
 
     @Autowired
     protected CreditCardProviderServiceFastpayImpl creditCardProvider;
