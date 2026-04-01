@@ -4,6 +4,8 @@ TRUNCATE TABLE invoice CASCADE;
 
 INSERT INTO credit_card (id, brand, created_at, customer_id, exp_month, exp_year, gateway_code, last_numbers) VALUES('0199deda-9486-7d27-b40c-761f561a24d8', 'Visa', '2025-10-13 15:34:50.886', '28fcd9fb-4ce7-44d6-9583-14d8b3dc5aff', 12, 2038, 'cc_gwjiqr7ct9rpuzmpzxld0pltmxt66mj0', '1022');
 INSERT INTO credit_card (id, brand, created_at, customer_id, exp_month, exp_year, gateway_code, last_numbers) VALUES('0199e2dd-9434-7a09-9241-f23536267484', 'Master', '2025-10-14 10:16:36.277', '28fcd9fb-4ce7-44d6-9583-14d8b3dc5aff', 12, 2038, 'cc_qdaz5kadzm8zgccwu0mpghxwngkbtnpu', '4545');
+INSERT INTO credit_card (id, brand, created_at, customer_id, exp_month, exp_year, gateway_code, last_numbers) VALUES('019d4920-3814-7629-ac43-0f83f7888f0d', 'Visa', '2025-10-14 10:16:36.277', '28fcd9fb-4ce7-44d6-9583-14d8b3dc5aff', 12, 2038, 'cc_xvvuxfpo41nxrp8ays3gcrzfsnm71gvx', '1030');
+INSERT INTO credit_card (id, brand, created_at, customer_id, exp_month, exp_year, gateway_code, last_numbers) VALUES('019d492a-6d11-75e6-a665-2acd110fec6d', 'Visa', '2025-10-14 10:16:36.277', '28fcd9fb-4ce7-44d6-9583-14d8b3dc5aff', 12, 2038, 'cc_fake', '9999');
 
 INSERT INTO payment_settings (id, credit_card_id, gateway_code, method) VALUES
 ('019a26ea-7208-7da4-b1fc-f23f265559ac', '0199deda-9486-7d27-b40c-761f561a24d8', 'pay_vilgzzw8pdyauzrbiouaifej0mtwmzsw', 'CREDIT_CARD'),
