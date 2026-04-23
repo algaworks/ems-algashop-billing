@@ -17,7 +17,7 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://algashop-authorization-server:8081
+          issuer-uri: http://auth.algashop.local:8081
 
 algashop:
   integrations:
