@@ -12,6 +12,7 @@ import com.algaworks.algashop.billing.domain.model.invoice.payment.PaymentStatus
 import com.algaworks.algashop.billing.infrastructure.listener.InvoiceEventListener;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -43,6 +44,9 @@ class InvoiceManagementApplicationServiceIT extends AbstractApplicationIT {
 
     @Test
     public void shouldGenerateInvoiceWithCreditCardAsPayment() {
+        Mockito.when(securityChecks.getAuthenticatedUserId()).thenReturn(UUID.randomUUID());
+        Mockito.when(securityChecks.isAuthenticated()).thenReturn(true);
+
         UUID customerId = UUID.randomUUID();
         CreditCard creditCard = CreditCardTestDataBuilder.aCreditCard().customerId(customerId).build();
         creditCardRepository.saveAndFlush(creditCard);
@@ -105,6 +109,7 @@ class InvoiceManagementApplicationServiceIT extends AbstractApplicationIT {
                 .method(invoice.getPaymentSettings().getMethod())
                 .status(PaymentStatus.PAID)
                 .build();
+
         Mockito.when(paymentGatewayService.capture(Mockito.any(PaymentRequest.class))).thenReturn(payment);
 
         applicationService.processPayment(invoice.getId());
