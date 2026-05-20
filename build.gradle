@@ -36,11 +36,13 @@ repositories {
 
 ext {
     set('springCloudVersion', "2025.1.0")
+    set('springCloudAwsVersion', "4.0.0")
 }
 
 dependencyManagement {
     imports {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        mavenBom "io.awspring.cloud:spring-cloud-aws-dependencies:${springCloudAwsVersion}"
     }
 }
 
@@ -53,6 +55,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-security-oauth2-resource-server'
+
+    implementation platform("io.awspring.cloud:spring-cloud-aws-dependencies:${springCloudAwsVersion}")
+    implementation 'io.awspring.cloud:spring-cloud-aws-starter-secrets-manager'
+    implementation 'io.awspring.cloud:spring-cloud-aws-starter-parameter-store'
 
     implementation 'commons-validator:commons-validator:1.10.1'
     implementation 'com.fasterxml.uuid:java-uuid-generator:5.2.0'
