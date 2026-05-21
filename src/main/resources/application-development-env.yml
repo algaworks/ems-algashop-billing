@@ -38,3 +38,13 @@ algashop:
         hostname: ${billing.params.fastpay.hostname}
         private-token: ${billing.secrets.fastpay-token}
         webhook-url: ${billing.params.fastpay.webhook-url}
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://service-registry:8761/eureka
+    healthcheck:
+      enabled: true
+  instance:
+    instanceId: ${random.uuid}
+    prefer-ip-address: true

@@ -38,4 +38,4 @@ management:
       status:
         order: "DOWN, OUT_OF_SERVICE, UNKNOWN, DEGRADED, UP"
 info:
-  app.name: AlgaShop Ordering API
+  app.name: AlgaShop Billing API
