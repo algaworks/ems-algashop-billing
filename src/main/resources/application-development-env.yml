@@ -45,7 +45,7 @@ algashop:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://service-registry:8761/eureka
+      defaultZone: ${shared.params.service-registry-url}/eureka
     healthcheck:
       enabled: true
   instance:
