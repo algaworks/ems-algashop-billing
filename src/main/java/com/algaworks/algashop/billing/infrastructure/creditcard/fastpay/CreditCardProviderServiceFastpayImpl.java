@@ -3,6 +3,7 @@ package com.algaworks.algashop.billing.infrastructure.creditcard.fastpay;
 import com.algaworks.algashop.billing.domain.model.creditcard.CreditCardProviderService;
 import com.algaworks.algashop.billing.domain.model.creditcard.LimitedCreditCard;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -13,6 +14,7 @@ import java.util.UUID;
 @Service
 @ConditionalOnProperty(name = "algashop.integrations.payment.provider", havingValue = "FASTPAY")
 @RequiredArgsConstructor
+@Slf4j
 public class CreditCardProviderServiceFastpayImpl implements CreditCardProviderService {
 
     private final FastpayCreditCardAPIClient fastpayCreditCardAPIClient;
@@ -41,7 +43,11 @@ public class CreditCardProviderServiceFastpayImpl implements CreditCardProviderS
 
     @Override
     public void delete(String gatewayCode) {
-        fastpayCreditCardAPIClient.delete(gatewayCode);
+        try {
+            fastpayCreditCardAPIClient.delete(gatewayCode);
+        } catch (HttpClientErrorException.NotFound e) {
+            log.error("Credit card not found when tried to delete", e);
+        }
     }
 
     private LimitedCreditCard toLimitedCreditCard(FastpayCreditCardResponse response) {
