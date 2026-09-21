@@ -27,6 +27,32 @@ spring:
     user: ${billing.secrets.datasource.username}
     password: ${billing.secrets.datasource.password}
     url: ${billing.params.datasource.url}
+  kafka:
+    bootstrap-servers: algashop-kafka-1:9092,algashop-kafka-2:9093,algashop-kafka-3:9094
+    properties:
+      spring.json.type.mapping:
+    admin:
+      fail-fast: true
+      auto-create: true
+      modify-topic-configs: false
+    producer:
+      acks: all
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JacksonJsonSerializer
+      properties:
+        enable.idempotence: true
+        request.timeout.ms: 5000
+        delivery.timeout.ms: 30000
+        max.block.ms: 5000
+    consumer:
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.ErrorHandlingDeserializer
+      properties:
+        spring.deserializer.value.delegate.class: org.springframework.kafka.support.serializer.JacksonJsonDeserializer
+        spring.json.trusted.packages: com.algaworks.algashop.*
+        spring.json.key.default.type: java.lang.String
+        spring.json.value.default.type: java.lang.String
+        spring.json.value.type.method: com.algaworks.algashop.billing.infrastructure.kafka.KafkaConsumerTypeIdIdentifier.readType
   security:
     oauth2:
       resourceserver:
@@ -41,6 +67,13 @@ algashop:
         hostname: ${billing.params.fastpay.hostname}
         private-token: ${billing.secrets.fastpay-token}
         webhook-url: ${billing.params.fastpay.webhook-url}
+  messaging:
+    kafka:
+      order-event-topic-name: ordering.order.events
+      invoice-event-topic-name: billing.invoice.events
+      order-events-consumer-group: billing.order-events
+      invoice-events-consumer-group: billing.invoice-events
+
 
 eureka:
   client:
