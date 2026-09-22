@@ -2,6 +2,7 @@ package com.algaworks.algashop.billing.infrastructure.listener;
 
 import com.algaworks.algashop.billing.application.invoice.event.InvoiceIntegrationEventPublisher;
 import com.algaworks.algashop.billing.application.invoice.event.InvoiceIssuedIntegrationEvent;
+import com.algaworks.algashop.billing.application.invoice.event.InvoicePaidIntegrationEvent;
 import com.algaworks.algashop.billing.application.utility.Mapper;
 import com.algaworks.algashop.billing.domain.model.invoice.InvoiceCanceledEvent;
 import com.algaworks.algashop.billing.domain.model.invoice.InvoiceIssuedEvent;
@@ -29,9 +30,9 @@ public class InvoiceEventListener {
 
     }
 
-    @EventListener
+    @TransactionalEventListener
     public void listen(InvoicePaidEvent event) {
-
+        invoiceIntegrationEventPublisher.send(mapper.convert(event, InvoicePaidIntegrationEvent.class));
     }
 
 }
