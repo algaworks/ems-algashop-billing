@@ -31,6 +31,7 @@ spring:
     bootstrap-servers: algashop-kafka-1:9092,algashop-kafka-2:9093,algashop-kafka-3:9094
     properties:
       spring.json.type.mapping:
+        Ordering.OrderPlacedIntegrationEvent:com.algaworks.algashop.billing.application.order.event.OrderPlacedIntegrationEvent
     admin:
       fail-fast: true
       auto-create: true
