@@ -17,11 +17,14 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
+import org.springframework.test.context.event.ApplicationEvents;
+import org.springframework.test.context.event.RecordApplicationEvents;
 
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 
+@RecordApplicationEvents
 class InvoiceManagementApplicationServiceIT extends AbstractApplicationIT {
 
     @Autowired
@@ -41,6 +44,9 @@ class InvoiceManagementApplicationServiceIT extends AbstractApplicationIT {
 
     @MockitoSpyBean
     private InvoiceEventListener invoiceEventListener;
+
+    @Autowired
+    private ApplicationEvents applicationEvents;
 
     @Test
     public void shouldGenerateInvoiceWithCreditCardAsPayment() {
@@ -73,7 +79,9 @@ class InvoiceManagementApplicationServiceIT extends AbstractApplicationIT {
 
         Mockito.verify(invoicingService).issue(any(), any(), any(), any());
 
-        Mockito.verify(invoiceEventListener).listen(Mockito.any(InvoiceIssuedEvent.class));
+        Assertions.assertThat(applicationEvents.stream(InvoiceIssuedEvent.class).toList())
+                .singleElement()
+                .satisfies(event -> Assertions.assertThat(event.getInvoiceId()).isEqualTo(invoiceId));
     }
 
     @Test
@@ -121,7 +129,10 @@ class InvoiceManagementApplicationServiceIT extends AbstractApplicationIT {
         Mockito.verify(paymentGatewayService).capture(Mockito.any(PaymentRequest.class));
         Mockito.verify(invoicingService).assignPayment(Mockito.any(Invoice.class), Mockito.any(Payment.class));
 
-        Mockito.verify(invoiceEventListener).listen(Mockito.any(InvoicePaidEvent.class));
+        UUID invoiceId = paidInvoice.getId();
+        Assertions.assertThat(applicationEvents.stream(InvoicePaidEvent.class).toList())
+                .singleElement()
+                .satisfies(event -> Assertions.assertThat(event.getInvoiceId()).isEqualTo(invoiceId));
     }
 
     @Test
