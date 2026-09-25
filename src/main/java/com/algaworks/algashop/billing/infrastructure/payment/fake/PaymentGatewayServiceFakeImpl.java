@@ -33,4 +33,9 @@ public class PaymentGatewayServiceFakeImpl implements PaymentGatewayService {
                 .gatewayCode(UUID.randomUUID().toString())
                 .build();
     }
+
+    @Override
+    public void refund(String gatewayCode) {
+
+    }
 }

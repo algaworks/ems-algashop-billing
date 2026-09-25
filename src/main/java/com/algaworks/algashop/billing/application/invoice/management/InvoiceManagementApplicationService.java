@@ -7,6 +7,7 @@ import com.algaworks.algashop.billing.domain.model.invoice.payment.Payment;
 import com.algaworks.algashop.billing.domain.model.invoice.payment.PaymentGatewayService;
 import com.algaworks.algashop.billing.domain.model.invoice.payment.PaymentRequest;
 import com.algaworks.algashop.billing.domain.model.invoice.payment.PaymentStatus;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -125,4 +126,13 @@ public class InvoiceManagementApplicationService {
                 .build();
     }
 
+    @Transactional
+	public void refundByOrderId(@NotBlank String orderId) {
+        Invoice invoice = invoiceRepository.findByOrderId(orderId).orElseThrow(InvoiceNotFoundException::new);
+
+        paymentGatewayService.refund(invoice.getPaymentSettings().getGatewayCode());
+
+        invoice.updatePaymentStatus(PaymentStatus.REFUNDED);
+        invoiceRepository.saveAndFlush(invoice);
+    }
 }

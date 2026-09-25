@@ -34,7 +34,8 @@ spring:
         Ordering.OrderPlacedIntegrationEvent:com.algaworks.algashop.billing.application.order.event.OrderPlacedIntegrationEvent,
         Billing.InvoiceIssuedIntegrationEvent:com.algaworks.algashop.billing.application.invoice.event.InvoiceIssuedIntegrationEvent,
         Billing.InvoicePaidIntegrationEvent:com.algaworks.algashop.billing.application.invoice.event.InvoicePaidIntegrationEvent,
-        Billing.InvoiceCanceledIntegrationEvent:com.algaworks.algashop.billing.application.invoice.event.InvoiceCanceledIntegrationEvent
+        Billing.InvoiceCanceledIntegrationEvent:com.algaworks.algashop.billing.application.invoice.event.InvoiceCanceledIntegrationEvent,
+        ProductCatalog.StockReservationRejectedIntegrationEvent:com.algaworks.algashop.billing.application.stock.event.StockReservationRejectedIntegrationEvent
     admin:
       fail-fast: true
       auto-create: true
@@ -77,6 +78,8 @@ algashop:
       invoice-event-topic-name: billing.invoice.events
       order-events-consumer-group: billing.order-events
       invoice-events-consumer-group: billing.invoice-events
+      stock-event-topic-name: product-catalog.stock.events
+      stock-events-consumer-group: billing.stock-events
 
 
 eureka:

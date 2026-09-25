@@ -48,6 +48,11 @@ public class KafkaConfig {
         return deadLetterTopic(properties.getInvoiceEventTopicName());
     }
 
+    @Bean
+    public NewTopic stockEventsDlt(AlgaShopMessagingKafkaProperties properties) {
+        return deadLetterTopic(properties.getStockEventTopicName());
+    }
+
     private NewTopic deadLetterTopic(String sourceTopic) {
         return TopicBuilder.name(DLT_PREFIX + sourceTopic)
                 .partitions(TOPIC_PARTITIONS)
