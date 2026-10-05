@@ -29,7 +29,5 @@ algashop:
         webhook-url: http://host.docker.internal:8082/api/v1/webhooks/fastpay
   messaging:
     kafka:
-      order-event-topic-name: ordering.order.events
       invoice-event-topic-name: billing.invoice.events
-      order-events-consumer-group: billing.order-events
       invoice-events-consumer-group: billing.invoice-events
