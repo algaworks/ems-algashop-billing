@@ -17,4 +17,10 @@ public class AlgaShopMessagingKafkaProperties {
 
     @NotBlank
     private String invoiceEventsConsumerGroup;
+
+    @NotBlank
+    private String invoiceCommandsTopicName;
+
+    @NotBlank
+    private String invoiceCommandsConsumerGroup;
 }

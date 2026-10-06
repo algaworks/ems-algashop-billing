@@ -74,8 +74,8 @@ algashop:
     kafka:
       invoice-event-topic-name: billing.invoice.events
       invoice-events-consumer-group: billing.invoice-events
-
-
+      invoice-commands-topic-name: billing.invoice.commands
+      invoice-commands-consumer-group: billing.invoice-commands
 eureka:
   client:
     serviceUrl:

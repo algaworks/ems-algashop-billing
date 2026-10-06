@@ -39,6 +39,15 @@ public class KafkaConfig {
     }
 
     @Bean
+    public NewTopic invoiceCommandTopic(AlgaShopMessagingKafkaProperties properties) {
+        return TopicBuilder.name(properties.getInvoiceCommandsTopicName())
+                .partitions(TOPIC_PARTITIONS)
+                .replicas(TOPIC_REPLICAS)
+                .configs(Map.of("min.insync.replicas", "2"))
+                .build();
+    }
+
+    @Bean
     public NewTopic invoiceEventsDlt(AlgaShopMessagingKafkaProperties properties) {
         return deadLetterTopic(properties.getInvoiceEventTopicName());
     }
