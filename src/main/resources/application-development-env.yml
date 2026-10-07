@@ -33,7 +33,8 @@ spring:
       spring.json.type.mapping:
         Billing.InvoiceIssuedIntegrationEvent:com.algaworks.algashop.billing.application.invoice.event.InvoiceIssuedIntegrationEvent,
         Billing.InvoicePaidIntegrationEvent:com.algaworks.algashop.billing.application.invoice.event.InvoicePaidIntegrationEvent,
-        Billing.InvoiceCanceledIntegrationEvent:com.algaworks.algashop.billing.application.invoice.event.InvoiceCanceledIntegrationEvent
+        Billing.InvoiceCanceledIntegrationEvent:com.algaworks.algashop.billing.application.invoice.event.InvoiceCanceledIntegrationEvent,
+        Billing.IssueInvoiceIntegrationCommand:com.algaworks.algashop.billing.application.invoice.command.IssueInvoiceIntegrationCommand
     admin:
       fail-fast: true
       auto-create: true
