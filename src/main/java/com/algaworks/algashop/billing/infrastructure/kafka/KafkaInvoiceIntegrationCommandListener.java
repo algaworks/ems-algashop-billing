@@ -4,6 +4,7 @@ import com.algaworks.algashop.billing.application.invoice.command.IssueInvoiceIn
 import com.algaworks.algashop.billing.application.invoice.management.GenerateInvoiceInput;
 import com.algaworks.algashop.billing.application.invoice.management.GenerateInvoiceInputAssembler;
 import com.algaworks.algashop.billing.application.invoice.management.InvoiceManagementApplicationService;
+import com.algaworks.algashop.billing.infrastructure.persistence.reply.PendingReplies;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,8 +14,10 @@ import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
 @Component
 @Slf4j
@@ -28,6 +31,9 @@ public class KafkaInvoiceIntegrationCommandListener {
     private final InvoiceManagementApplicationService invoiceManagementApplicationService;
     private final GenerateInvoiceInputAssembler generateInvoiceInputAssembler;
 
+    private final PendingReplies pendingReplies;
+    private final TransactionTemplate transactionTemplate;
+
     @KafkaHandler
     public void handle(
             @Payload @Valid IssueInvoiceIntegrationCommand command,
@@ -38,13 +44,15 @@ public class KafkaInvoiceIntegrationCommandListener {
             @Header(value = KafkaHeaders.OFFSET, required = false) Long offset) {
         logReceived(command, messageKey, partition, offset);
 
-        requireHeader(correlationId, KafkaHeaders.CORRELATION_ID);
-        requireHeader(replyTopic, KafkaHeaders.REPLY_TOPIC);
+        String sagaCorrelationId = requireHeader(correlationId, KafkaHeaders.CORRELATION_ID);
+        String sagaReplyTopic = requireHeader(replyTopic, KafkaHeaders.REPLY_TOPIC);
 
         GenerateInvoiceInput input = generateInvoiceInputAssembler.toGenerateInvoiceInput(command);
 
-        invoiceManagementApplicationService.generate(input);
-
+        transactionTemplate.executeWithoutResult(status -> {
+            UUID invoiceId = invoiceManagementApplicationService.generate(input);
+            pendingReplies.register(invoiceId, command.getOrderId(), sagaCorrelationId, sagaReplyTopic);
+        });
     }
 
     // o tópico é exclusivo de comandos de fatura: tipo desconhecido é erro de contrato
