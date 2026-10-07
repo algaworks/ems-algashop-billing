@@ -30,6 +30,7 @@ public class KafkaInvoiceIntegrationEventPublisher implements InvoiceIntegration
     @Override
     public void send(OutboundIntegrationEvent event) {
         var violations = validator.validate(event);
+
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(violations);
         }
@@ -49,6 +50,7 @@ public class KafkaInvoiceIntegrationEventPublisher implements InvoiceIntegration
         }
 
         RecordMetadata metadata = result.getRecordMetadata();
+
         log.info("Published {} to {}-{} at offset {}",
                 event.getClass().getSimpleName(),
                 metadata.topic(),
