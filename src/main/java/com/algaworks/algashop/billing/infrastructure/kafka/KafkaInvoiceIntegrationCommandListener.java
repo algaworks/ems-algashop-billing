@@ -1,9 +1,13 @@
 package com.algaworks.algashop.billing.infrastructure.kafka;
 
+import com.algaworks.algashop.billing.application.invoice.command.CancelInvoiceIntegrationCommand;
 import com.algaworks.algashop.billing.application.invoice.command.IssueInvoiceIntegrationCommand;
 import com.algaworks.algashop.billing.application.invoice.management.GenerateInvoiceInput;
 import com.algaworks.algashop.billing.application.invoice.management.GenerateInvoiceInputAssembler;
 import com.algaworks.algashop.billing.application.invoice.management.InvoiceManagementApplicationService;
+import com.algaworks.algashop.billing.application.invoice.query.InvoiceOutput;
+import com.algaworks.algashop.billing.application.invoice.query.InvoiceQueryService;
+import com.algaworks.algashop.billing.application.invoice.reply.InvoiceCanceledIntegrationReply;
 import com.algaworks.algashop.billing.infrastructure.persistence.reply.PendingReplies;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +17,7 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -29,6 +34,8 @@ import java.util.UUID;
 public class KafkaInvoiceIntegrationCommandListener {
 
     private final InvoiceManagementApplicationService invoiceManagementApplicationService;
+    private final InvoiceQueryService invoiceQueryService;
+
     private final GenerateInvoiceInputAssembler generateInvoiceInputAssembler;
 
     private final PendingReplies pendingReplies;
@@ -53,6 +60,30 @@ public class KafkaInvoiceIntegrationCommandListener {
             UUID invoiceId = invoiceManagementApplicationService.generate(input);
             pendingReplies.register(invoiceId, command.getOrderId(), sagaCorrelationId, sagaReplyTopic);
         });
+    }
+
+    @KafkaHandler
+    @SendTo
+    public InvoiceCanceledIntegrationReply handle(
+            @Payload @Valid CancelInvoiceIntegrationCommand command,
+            @Header(value = KafkaHeaders.CORRELATION_ID, required = false) byte[] correlationId,
+            @Header(value = KafkaHeaders.REPLY_TOPIC, required = false) byte[] replyTopic,
+            @Header(value = KafkaHeaders.RECEIVED_KEY, required = false) String messageKey,
+            @Header(value = KafkaHeaders.RECEIVED_PARTITION, required = false) Integer partition,
+            @Header(value = KafkaHeaders.OFFSET, required = false) Long offset) {
+        logReceived(command, messageKey, partition, offset);
+
+        requireHeader(correlationId, KafkaHeaders.CORRELATION_ID);
+        requireHeader(replyTopic, KafkaHeaders.REPLY_TOPIC);
+
+        invoiceManagementApplicationService.refundByOrderId(command.getOrderId());
+        InvoiceOutput invoiceOutput = invoiceQueryService.findByOrderId(command.getOrderId());
+
+        return InvoiceCanceledIntegrationReply.builder()
+                .invoiceId(invoiceOutput.getId())
+                .orderId(invoiceOutput.getOrderId())
+                .canceledAt(invoiceOutput.getCanceledAt())
+                .build();
     }
 
     // o tópico é exclusivo de comandos de fatura: tipo desconhecido é erro de contrato
