@@ -34,5 +34,10 @@ public class SecurityAnnotations {
     @PreAuthorize("hasAuthority('SCOPE_credit-cards:write') and hasRole('CUSTOMER')")
     public @interface CanWriteMyCreditCards {}
 
+    @Target({ElementType.METHOD, ElementType.TYPE})
+    @Retention(RetentionPolicy.RUNTIME)
+    @PreAuthorize("hasAuthority('SCOPE_metrics:read') and not hasRole('CUSTOMER')")
+    public @interface CanReadMetrics {}
+
 }
 
